@@ -9,5 +9,5 @@ set(CMAKE_BUILD_TYPE Debug)
 
 include_directories(include)
 
-add_executable(${PROJECT_NAME} src/main.c src/foxcore/render.c src/foxcore/glad/glad.c)
+add_executable(${PROJECT_NAME} src/main.c src/foxcore/render.c src/foxcore/shader.c src/foxcore/io.c src/foxcore/glad/glad.c)
 target_link_libraries(${PROJECT_NAME} SDL2 SDL2main m)
