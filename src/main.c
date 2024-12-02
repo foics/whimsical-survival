@@ -19,6 +19,8 @@ int main(int argc, char* argv[]) {
 
     useShader(defaultShader);
 
+    renderInitShader(defaultShader, WIDTH, HEIGHT);
+
     while (running) {
         SDL_Event event;
         while (SDL_PollEvent(&event)) {
@@ -32,6 +34,9 @@ int main(int argc, char* argv[]) {
         }
 
         renderBegin();
+
+        drawQuad((vec3){(WIDTH / 2) - 50, (HEIGHT / 2) - 50, 1}, (vec2){100, 100}, (vec4){1.0f, 1.0f, 1.0f, 1.0f}, defaultShader);
+        drawQuad((vec3){(WIDTH / 2) - 25, (HEIGHT / 2) - 25, 0}, (vec2){100, 100}, (vec4){1.0f, 0.0f, 1.0f, 1.0f}, defaultShader);
 
         renderEnd(window);
     }

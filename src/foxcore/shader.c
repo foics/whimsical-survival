@@ -33,7 +33,7 @@ unsigned int createShader(const char *pathVert, const char *pathFrag) {
     }
 
     // fragment shader
-    fragment = glCreateShader(GL_VERTEX_SHADER);
+    fragment = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment, 1, (const char *const *)&fileFragment, NULL);
     glCompileShader(fragment);
 
