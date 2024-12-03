@@ -6,8 +6,11 @@
 #include <cglm/cglm.h>
 
 SDL_Window* renderInit(int width, int height);
-void renderInitShader(unsigned int shader, int width, int height);
-void renderBegin();
+void renderClear(float r, float g, float b, float a);
 void renderEnd(SDL_Window* window);
 
-void drawQuad(vec3 pos, vec2 size, vec4 color, unsigned int shader);
+void drawQuad(vec3 pos, vec2 size, float rotate, vec4 color, unsigned int shader);
+
+unsigned int createTexture(const char* path);
+
+void drawSprite(vec3 pos, vec2 size, float rotate, vec4 color, unsigned int texture, unsigned int shader);

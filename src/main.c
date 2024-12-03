@@ -15,11 +15,9 @@ int main(int argc, char* argv[]) {
 
     SDL_Window *window = renderInit(WIDTH, HEIGHT);
 
-    unsigned int defaultShader = createShader("./shaders/default.vert", "./shaders/default.frag");
+    unsigned int defaultShader = createShader("./shaders/default.vert", "./shaders/default.frag", WIDTH, HEIGHT);
 
-    useShader(defaultShader);
-
-    renderInitShader(defaultShader, WIDTH, HEIGHT);
+    unsigned int quadTex = createTexture("./assets/player.png");
 
     while (running) {
         SDL_Event event;
@@ -33,10 +31,10 @@ int main(int argc, char* argv[]) {
             }
         }
 
-        renderBegin();
+        renderClear(0.3f, 0.3f, 0.3f, 1.0f);
 
-        drawQuad((vec3){(WIDTH / 2) - 50, (HEIGHT / 2) - 50, 1}, (vec2){100, 100}, (vec4){1.0f, 1.0f, 1.0f, 1.0f}, defaultShader);
-        drawQuad((vec3){(WIDTH / 2) - 25, (HEIGHT / 2) - 25, 0}, (vec2){100, 100}, (vec4){1.0f, 0.0f, 1.0f, 1.0f}, defaultShader);
+        drawSprite((vec3){(WIDTH / 2) - 50, (HEIGHT / 2) - 50, 1}, (vec2){100, 100}, 0.0f, (vec4){1.0f, 1.0f, 1.0f, 1.0f}, quadTex, defaultShader);
+        drawQuad((vec3){(WIDTH / 2) - 25, (HEIGHT / 2) - 25, 0}, (vec2){100, 100}, 20.0f, (vec4){1.0f, 0.0f, 1.0f, 1.0f}, defaultShader);
 
         renderEnd(window);
     }

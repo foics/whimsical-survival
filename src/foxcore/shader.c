@@ -1,8 +1,13 @@
 #include <stdio.h>
 
 #include "foxcore/shader.h"
+#include "cglm/cglm.h"
 
-unsigned int createShader(const char *pathVert, const char *pathFrag) {
+void useShader(unsigned int shader) {
+    glUseProgram(shader);
+}
+
+unsigned int createShader(const char *pathVert, const char *pathFrag, int width, int height) {
     int success;
     char log[512];
 
@@ -63,9 +68,13 @@ unsigned int createShader(const char *pathVert, const char *pathFrag) {
     free(fileVertex.data);
     free(fileFragment.data);
 
-    return shader;
-}
+    useShader(shader);
 
-void useShader(unsigned int shader) {
-    glUseProgram(shader);
+    mat4 projection;
+    glm_ortho(0, width, height, 0, -1.0f, 1.0f, projection);
+
+    glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, (const GLfloat*)projection);
+
+
+    return shader;
 }

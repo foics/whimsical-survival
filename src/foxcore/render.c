@@ -9,13 +9,16 @@ static unsigned int vaoQuad;
 static unsigned int vboQuad;
 static unsigned int eboQuad;
 
+static unsigned int textureColor;
+
 void initQuad(unsigned int *vao, unsigned int *vbo, unsigned int *ebo) {
 
     float vertices[] = {
-        0.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, 0.0f
+        // xyz            TextureCoords
+        0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 0.0f, 1.0f, 1.0f
     };
 
     unsigned int indices[] = {
@@ -36,8 +39,11 @@ void initQuad(unsigned int *vao, unsigned int *vbo, unsigned int *ebo) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // xyz
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), NULL);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), NULL);
     glEnableVertexAttribArray(0);
+    // TextureCoords
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), NULL);
+    glEnableVertexAttribArray(1);
 
     glBindVertexArray(0);
 }
@@ -83,25 +89,25 @@ SDL_Window* renderInit(int width, int height) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_DEPTH_TEST);
+    glDepthRange(0, 1);
+    glDepthFunc(GL_LESS);
+    glClearDepth(1.0f);
 
     initQuad(&vaoQuad, &vboQuad, &eboQuad);
 
-    stbi_set_flip_vertically_on_load(1);
+    glGenTextures(1, &textureColor);
+    glBindTexture(GL_TEXTURE_2D, textureColor);
+
+    uint8_t white[] = {255, 255, 255, 255};
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, white);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     return window;
 }
 
-void renderInitShader(unsigned int shader, int width, int height) {
-
-    mat4 projection;
-    glm_ortho(0, width, height, 0, -1.0f, 1.0f, projection);
-
-    glUniformMatrix4fv(glGetUniformLocation(shader, "projection"), 1, GL_FALSE, (const GLfloat*)projection);
-
-}
-
-void renderBegin() {
-    glClearColor(0, 0, 0, 1);
+void renderClear(float r, float g, float b, float a) {
+    glClearColor(r, g, b, a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -109,20 +115,106 @@ void renderEnd(SDL_Window* window) {
     SDL_GL_SwapWindow(window);
 }
 
-void drawQuad(vec2 pos, vec2 size, vec4 color, unsigned int shader) {
+void drawQuad(vec3 pos, vec2 size, float rotate, vec4 color, unsigned int shader) {
+
+    useShader(shader);
 
     mat4 model;
     glm_mat4_identity(model);
+
     glm_translate(model, pos);
+
+    glm_translate(model, (vec3){0.5f * size[0], 0.5f * size[1], 0.0f});
+    glm_rotate(model, glm_rad(rotate), (vec3){0.0f, 0.0f, 1.0f});
+    glm_translate(model, (vec3){-0.5f * size[0], -0.5f * size[1], 0.0f});
+
     glm_scale(model, size);
 
     glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, (const GLfloat*)model);
     glUniform4fv(glGetUniformLocation(shader, "color"), 1, color);
+
+    glBindTexture(GL_TEXTURE_2D, textureColor);
 
     glBindVertexArray(vaoQuad);
 
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
 
     glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+}
+
+unsigned int createTexture(const char* path) {
+
+    unsigned int texture;
+
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    int width, height, colorChannels;
+    unsigned char *data = stbi_load(path, &width, &height, &colorChannels, 0);
+    if (!data) {
+        printf("Error: Failed to load texture %s\n", path);
+        return 0;
+    }
+
+    GLenum format = GL_RGBA;
+    switch (colorChannels) {
+        case 1:
+            format = GL_RED;
+            break;
+        case 3:
+            format = GL_RGB;
+            break;
+        case 4:
+            format = GL_RGBA;
+            break;
+        default:
+            printf("Error: Invalid number of color channels: %s\n", path);
+            break;
+    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(data);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    return texture;
+}
+
+void drawSprite(vec3 pos, vec2 size, float rotate, vec4 color, unsigned int texture, unsigned int shader) {
+
+    useShader(shader);
+
+    mat4 model;
+    glm_mat4_identity(model);
+
+    glm_translate(model, pos);
+
+    glm_translate(model, (vec3){0.5f * size[0], 0.5f * size[1], 0.0f});
+    glm_rotate(model, glm_rad(rotate), (vec3){0.0f, 0.0f, 1.0f});
+    glm_translate(model, (vec3){-0.5f * size[0], -0.5f * size[1], 0.0f});
+
+    glm_scale(model, size);
+
+    glUniformMatrix4fv(glGetUniformLocation(shader, "model"), 1, GL_FALSE, (const GLfloat*)model);
+    glUniform4fv(glGetUniformLocation(shader, "color"), 1, color);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    glBindVertexArray(vaoQuad);
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, NULL);
+
+    glBindVertexArray(0);
+    glBindTexture(GL_TEXTURE_2D, 0);
 
 }
