@@ -1,3 +1,0 @@
-/home/foics/code/cpp/whimsical-survival/build/CMakeFiles/main.dir
-/home/foics/code/cpp/whimsical-survival/build/CMakeFiles/edit_cache.dir
-/home/foics/code/cpp/whimsical-survival/build/CMakeFiles/rebuild_cache.dir
