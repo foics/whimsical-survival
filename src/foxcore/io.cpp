@@ -1,6 +1,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "foxcore/io.hpp"
+
 std::string readFile(const std::string &path) {
     std::ifstream stream(path);
     std::string line;
