@@ -35,7 +35,7 @@ int main(int argc, char* argv[]) {
         renderClear(0.3f, 0.3f, 0.3f, 1.0f);
 
         drawSprite((glm::vec3){player->x, player->y, player->z},
-                   (glm::vec2){player->xSize, player->ySize},
+                   (glm::vec2){player->width, player->height},
                    player->rot,
                    player->color,
                    quadTex,

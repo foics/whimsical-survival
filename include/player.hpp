@@ -5,16 +5,16 @@
 class Player {
 public:
     int x, y, z;
-    int xSize, ySize;
+    int width, height;
     glm::vec4 color;
 
-    Player(int x, int y, int z, int xSize, int ySize, glm::vec4 color) {
+    Player(int x, int y, int z, int width, int height, glm::vec4 color) {
         this->x = x;
         this->y = y;
         this->z = z;
 
-        this->xSize = xSize;
-        this->ySize = ySize;
+        this->width = width;
+        this->height = height;
 
         this->color = color;
     }

@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iostream>
 
 std::string readFile(const std::string &path) {
     std::ifstream stream(path);
