@@ -1,34 +1,14 @@
 #include <foxcore/render.hpp>
 #include <foxcore/shader.hpp>
-#include <foxcore/parser.hpp>
+#include <foxcore/input.hpp>
 
+#include "input.hpp"
 #include "player.hpp"
 
 bool running = true;
 
 static int WIDTH = 1280;
 static int HEIGHT = 720;
-
-void inputHandler(Player *player) {
-    const uint8_t *currentKeyStates = SDL_GetKeyboardState(NULL);
-
-    SDL_Scancode up = SDL_GetScancodeFromName(getValue("./config.ini", "up").c_str());
-    SDL_Scancode down = SDL_GetScancodeFromName(getValue("./config.ini", "down").c_str());
-    SDL_Scancode left = SDL_GetScancodeFromName(getValue("./config.ini", "left").c_str());
-    SDL_Scancode right = SDL_GetScancodeFromName(getValue("./config.ini", "right").c_str());
-
-    if (currentKeyStates[up]) {
-        player->y--;
-    } else if (currentKeyStates[down]) {
-        player->y++;
-    }
-
-    if (currentKeyStates[left]) {
-        player->x--;
-    } else if (currentKeyStates[right]) {
-        player->x++;
-    }
-}
 
 int main(int argc, char* argv[]) {
 
