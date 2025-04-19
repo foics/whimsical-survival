@@ -8,17 +8,25 @@ SDL_Scancode left = getKey(getValue("./config.ini", "left"));
 SDL_Scancode right = getKey(getValue("./config.ini", "right"));
 
 void inputHandler(Object *player) {
-    if (isKeyDown(up)) {
-        player->y--;
-    }
-    if (isKeyDown(down)) {
-        player->y++;
+    int speed = 2;
+
+    if (isKeyDown(up) && isKeyDown(down)) {
+        player->vy = 0;
+    } else if (isKeyDown(up)) {
+        player->vy = -speed;
+    } else if (isKeyDown(down)) {
+        player->vy = speed;
+    } else {
+        player->vy = 0;
     }
 
-    if (isKeyDown(left)) {
-        player->x--;
-    }
-    if (isKeyDown(right)) {
-        player->x++;
+    if (isKeyDown(left) && isKeyDown(right)) {
+        player->vx = 0;
+    } else if (isKeyDown(left)) {
+        player->vx = -speed;
+    } else if (isKeyDown(right)) {
+        player->vx = speed;
+    } else {
+        player->vx = 0;
     }
 }

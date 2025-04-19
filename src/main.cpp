@@ -37,13 +37,16 @@ int main(int argc, char* argv[]) {
 
         inputHandler(player);
 
-        renderClear(0.3f, 0.3f, 0.3f, 1.0f);
+        player->x += player->vx;
+        player->y += player->vy;
 
         if (isOverlapping(player, object)) {
             object->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
         } else {
             object->color = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
         }
+
+        renderClear(0.3f, 0.3f, 0.3f, 1.0f);
 
         drawSprite((glm::vec3){player->x, player->y, player->z},
                    (glm::vec2){player->width, player->height},

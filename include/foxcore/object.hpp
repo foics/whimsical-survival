@@ -19,6 +19,9 @@ public:
         this->color = color;
     }
 
-    int rot = 0.0f;
+    int rot = 0;
+
+    int vx = 0;
+    int vy = 0;
 
 };
