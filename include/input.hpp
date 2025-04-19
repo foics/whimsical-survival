@@ -1,4 +1,4 @@
 #include <foxcore/input.hpp>
-#include "player.hpp"
+#include <foxcore/object.hpp>
 
-void inputHandler(Player *player);
+void inputHandler(Object *player);

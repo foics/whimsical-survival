@@ -7,7 +7,7 @@ SDL_Scancode down = getKey(getValue("./config.ini", "down"));
 SDL_Scancode left = getKey(getValue("./config.ini", "left"));
 SDL_Scancode right = getKey(getValue("./config.ini", "right"));
 
-void inputHandler(Player *player) {
+void inputHandler(Object *player) {
     if (isKeyDown(up)) {
         player->y--;
     }

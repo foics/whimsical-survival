@@ -1,7 +1,6 @@
 #include <string>
 
 #include "foxcore/input.hpp"
-#include "SDL2/SDL_keyboard.h"
 
 const uint8_t *currentKeyStates = SDL_GetKeyboardState(NULL);
 

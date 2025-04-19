@@ -1,9 +1,10 @@
 #include <foxcore/render.hpp>
 #include <foxcore/shader.hpp>
 #include <foxcore/input.hpp>
+#include <foxcore/object.hpp>
+#include <foxcore/collision.hpp>
 
 #include "input.hpp"
-#include "player.hpp"
 
 bool running = true;
 
@@ -18,7 +19,9 @@ int main(int argc, char* argv[]) {
 
     unsigned int quadTex = createTexture("./assets/player.png");
 
-    Player *player = new Player(WIDTH / 2 - 50, HEIGHT / 2 - 50, 1, 100, 100, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    Object *player = new Object(WIDTH / 2 - 50, HEIGHT / 2 - 50, 1, 100, 100, glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
+
+    Object *object = new Object(WIDTH / 3, HEIGHT / 3, 0, 100, 100, glm::vec4(1.0f, 0.0f, 1.0f, 1.0f));
 
     while (running) {
         SDL_Event event;
@@ -36,6 +39,12 @@ int main(int argc, char* argv[]) {
 
         renderClear(0.3f, 0.3f, 0.3f, 1.0f);
 
+        if (isOverlapping(player, object)) {
+            object->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
+        } else {
+            object->color = glm::vec4(1.0f, 0.0f, 1.0f, 1.0f);
+        }
+
         drawSprite((glm::vec3){player->x, player->y, player->z},
                    (glm::vec2){player->width, player->height},
                    player->rot,
@@ -43,7 +52,7 @@ int main(int argc, char* argv[]) {
                    quadTex,
                    defaultShader);
 
-        drawQuad((glm::vec3){(WIDTH / 2) - 25, (HEIGHT / 2) - 25, 0}, (glm::vec2){100, 100}, 20.0f, (glm::vec4){1.0f, 0.0f, 1.0f, 1.0f}, defaultShader);
+        drawQuad((glm::vec3){object->x, object->y, object->z}, (glm::vec2){object->width, object->height}, object->rot, object->color, defaultShader);
 
         renderEnd(window);
     }

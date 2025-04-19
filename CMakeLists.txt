@@ -10,5 +10,5 @@ set(CMAKE_BUILD_TYPE Debug)
 include_directories(include)
 link_directories(lib)
 
-add_executable(${PROJECT_NAME} src/main.cpp src/input.cpp src/foxcore/io.cpp src/foxcore/render.cpp src/foxcore/shader.cpp src/foxcore/parser.cpp src/foxcore/input.cpp src/foxcore/glad/glad.c)
+add_executable(${PROJECT_NAME} src/main.cpp src/input.cpp src/foxcore/io.cpp src/foxcore/render.cpp src/foxcore/shader.cpp src/foxcore/parser.cpp src/foxcore/input.cpp src/foxcore/collision.cpp src/foxcore/glad/glad.c)
 target_link_libraries(${PROJECT_NAME} SDL2main SDL2 m)

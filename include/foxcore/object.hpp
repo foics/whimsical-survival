@@ -2,13 +2,13 @@
 
 #include <glm/glm.hpp>
 
-class Player {
+class Object {
 public:
     int x, y, z;
     int width, height;
     glm::vec4 color;
 
-    Player(int x, int y, int z, int width, int height, glm::vec4 color) {
+    Object(int x, int y, int z, int width, int height, glm::vec4 color) {
         this->x = x;
         this->y = y;
         this->z = z;
